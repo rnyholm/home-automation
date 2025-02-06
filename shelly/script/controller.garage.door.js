@@ -4,13 +4,13 @@
  */
 
 // constants
-let inputId = 100;            // input id of the garage door sensor(digital in on addon)
-let outputId = 0;             // output id of the relay(shelly 1) controlling the garage door
-let forceCloseTimeout = 5000; // timeout between garage door closing and opening, if door is opened within this time it will be forced to close
-let closeStopDelay = 1000;    // base delay to stop the garage door closing
-let delayStep = 100;          // step to reduce the "close stop delay"
-let controllerDelay = 2000;   // time to wait before sending open/close command to the garage door control unit
-let falseTriggerDelay = 700;  // time to wait before resetting doHandleEvent flag, this prevents false triggering
+const inputId = 100;            // input id of the garage door sensor(digital in on addon)
+const outputId = 0;             // output id of the relay(shelly 1) controlling the garage door
+const forceCloseTimeout = 5000; // timeout between garage door closing and opening, if door is opened within this time it will be forced to close
+const closeStopDelay = 1000;    // base delay to stop the garage door closing
+const delayStep = 100;          // step to reduce the "close stop delay"
+const controllerDelay = 2000;   // time to wait before sending open/close command to the garage door control unit
+const falseTriggerDelay = 700;  // time to wait before resetting doHandleEvent flag, this prevents false triggering
 
 // helpers
 let triggerCount = 0;
@@ -26,8 +26,8 @@ Shelly.addEventHandler(function (event) {
                 doHandleEvent = true;
             });
 
-            let state = event.info.state;
-            let now = Shelly.getComponentStatus("sys").unixtime * 1000;
+            const state = event.info.state;
+            const now = Shelly.getComponentStatus("sys").unixtime * 1000;
 
             if (!state) { // garage door closed
                 print("Garagedoor closing");
