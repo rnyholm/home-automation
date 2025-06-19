@@ -12,7 +12,7 @@
 const timeOff = "23:15";     // time when output will be turned off, this is also act
                              // as the latest time the output is allowed to turn on
 const outputId = 0;          // id of the output to control on the shelly device
-const timerInterval = 10000; // interval in milliseconds to run the timer(main) logic
+const timerInterval = 5000;  // interval in milliseconds to run the timer(main) logic
 const lat = XX.XXXXXX;       // Latitude according to your location
 const lon = YY.YYYYYY;       // Longitude according to your location
 
@@ -39,13 +39,17 @@ function fetchSunsetIfNeeded() {
         Shelly.call("http.get",
             {url: "https://api.sunrisesunset.io/json?lat=" + lat + "&lng=" + lon + "&time_format=24", timeout: 10},
             function (response) {
-                if (response.code === 200) {
-                    let obj = JSON.parse(response.body);
-                    sunset = obj.results.sunset;
-                    sunsetLastFetched = today;
-                    print("Fetched time of sunset is: " + sunset);
+                if (response && typeof response === "object" && "code" in response) {
+                    if (response.code === 200) {
+                        let obj = JSON.parse(response.body);
+                        sunset = obj.results.sunset;
+                        sunsetLastFetched = today;
+                        print("Fetched time of sunset is: " + sunset);
+                    } else {
+                        print("Error: HTTP request failed with response code: " + response.code);
+                    }
                 } else {
-                    print("Error: HTTP request failed with response code: " + response.code);
+                    print("Error: HTTP request failed, no valid response");
                 }
             });
     }
@@ -71,7 +75,7 @@ Timer.set(timerInterval, true, function () {
         let sunsetMinutes = parseInt(sunsetParts[0], 10) * 60 + parseInt(sunsetParts[1]);
 
         // turn output on if the sun has set now, and it's earlier than the "time off" limit
-        if (minutesNow === sunsetMinutes && sunsetMinutes < timeOffMinutes) {
+        if (minutesNow >= sunsetMinutes && sunsetMinutes < timeOffMinutes) {
             Shelly.call("Switch.GetStatus", {id: outputId}, function (result, errorCode, errorMsg) {
                 if (errorCode === 0) {
                     // output is off
