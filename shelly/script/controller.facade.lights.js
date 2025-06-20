@@ -75,7 +75,7 @@ Timer.set(timerInterval, true, function () {
         let sunsetMinutes = parseInt(sunsetParts[0], 10) * 60 + parseInt(sunsetParts[1]);
 
         // turn output on if the sun has set now, and it's earlier than the "time off" limit
-        if (minutesNow >= sunsetMinutes && sunsetMinutes < timeOffMinutes) {
+        if (minutesNow === sunsetMinutes && sunsetMinutes < timeOffMinutes) {
             Shelly.call("Switch.GetStatus", {id: outputId}, function (result, errorCode, errorMsg) {
                 if (errorCode === 0) {
                     // output is off
