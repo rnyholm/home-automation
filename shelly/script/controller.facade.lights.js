@@ -81,7 +81,7 @@ Timer.set(timerInterval, true, function () {
                     // output is off
                     if (!result.output) {
                         Shelly.call("Switch.set", {id: outputId, on: true});
-                        print("Turning on facade lighting at: " + formatTime(now));
+                        print("Turning on facade lighting at: " + formatTime());
                     }
                 }
             });
